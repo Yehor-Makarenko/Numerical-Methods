@@ -18,7 +18,7 @@ public class FixedPointIteration {
     }
   };
 
-  private static final Function phiDer1 = new Function() {
+  private static final Function phi1Der = new Function() {
     @Override
     public double getValue(double x) {           
       return -(4 * Math.pow(x, 3) + 96.32 * x + 108.08) / (3 * Math.pow(10, (double)1 / 3) * Math.pow(Math.pow(x, 4) + 48.16 * Math.pow(x, 2) + 108.08 * x + 70.76, (double)2 / 3));
@@ -32,20 +32,21 @@ public class FixedPointIteration {
     }
   };
 
-  private static final Function phiDer2 = new Function() {
+  private static final Function phi2Der = new Function() {
     @Override
     public double getValue(double x) {           
       return (30 * Math.pow(x, 2) + 96.32 * x + 108.08) / (4 * Math.pow(-10 * Math.pow(x, 3) - 48.16 * Math.pow(x, 2) - 108.08 * x - 70.76, (double)3 / 4));
     }
   };
 
+  private static final int MAX_ITERATIONS = 100;
+  private static final double E = 0.0001;
   private static Function mainPhi, mainPhiDer;
-
-  private static final double e = 0.0001;
-  private static double left, right, x0, q, prevX, currX, newX;  
+  private static double left, right, x0, q, x1, x2, x3;  
 
   public static void main(String[] args) {
-    Scanner input = new Scanner(System.in);    
+    Scanner input = new Scanner(System.in);   
+    int i = 0; 
 
     System.out.println("Left bound: ");
     left = input.nextDouble();
@@ -62,10 +63,10 @@ public class FixedPointIteration {
 
     if (right > -1.4) {
       mainPhi = phi1;
-      mainPhiDer = phiDer1;
+      mainPhiDer = phi1Der;
     } else {
       mainPhi = phi2;
-      mainPhiDer = phiDer2;
+      mainPhiDer = phi2Der;
     }
 
     if (!checkFirstCondition() || !checkSecondCondition()) {
@@ -73,19 +74,20 @@ public class FixedPointIteration {
       return;
     }
 
-    prevX = x0;
-    currX = mainPhi.getValue(prevX);
-    newX = mainPhi.getValue(currX);
+    x1 = x0;
+    x2 = mainPhi.getValue(x1);
+    x3 = mainPhi.getValue(x2);
 
-    while (!canFinish()) {
-      prevX = currX;
-      currX = newX;
-      newX = mainPhi.getValue(newX);
+    while (!canFinish() && i < MAX_ITERATIONS) {
+      x1 = x2;
+      x2 = x3;
+      x3 = mainPhi.getValue(x3);
+      i++;
     }
     
-    double y = f.getValue(newX);
+    double y = f.getValue(x3);
 
-    System.out.println("Result:\n\tx: " + newX + "\n\ty: " + y);
+    System.out.println("Result:\n\tx: " + x3 + "\n\ty: " + y);
   }
 
   private static boolean checkFirstCondition() {
@@ -102,6 +104,6 @@ public class FixedPointIteration {
   }
 
   private static boolean canFinish() {
-    return Math.pow(newX - currX, 2) / Math.abs(2 * currX - newX - prevX) < e;
+    return Math.pow(x3 - x2, 2) / Math.abs(2 * x2 - x3 - x1) < E;
   }
 }
