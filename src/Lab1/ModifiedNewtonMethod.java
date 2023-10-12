@@ -46,14 +46,14 @@ public class ModifiedNewtonMethod {
       return;
     }     
 
-    if (!checkCondition()) {
+    if (!checkFirstCondition() || !checkSecondCondition()) {
       System.out.println("Cannot use Newton method");
       return;
     }
     
     currX = x0;
     dx0 = fDer1.getValue(x0);
-    numberOfIterations = (int)Math.pow(Math.floor(Math.log(Math.log(delta / E) / Math.log(1 / q)) / Math.log(2) + 1) + 1, 2);  
+    numberOfIterations = (int)(Math.floor(Math.log(Math.log(delta / E) / Math.log(1 / q)) / Math.log(2) + 1) + 1);  
     numberOfIterations = Math.min(numberOfIterations, MAX_ITERATIONS);
 
     for (int i = 0; i < numberOfIterations; i++) {
@@ -63,9 +63,16 @@ public class ModifiedNewtonMethod {
     double y = f.getValue(currX);
 
     System.out.println("Result:\n\tx: " + currX + "\n\ty: " + y);
+    System.out.println(numberOfIterations);
   }
 
-  private static boolean checkCondition() {   
+  private static boolean checkFirstCondition() {   
+    System.out.println("f(a)*f(b)<0: " + (f.getValue(left) * f.getValue(right) < 0));
+    System.out.println("f(x0)*f''(x0)>0': " + (f.getValue(x0) * fDer2.getValue(x0) > 0));
+    return (f.getValue(left) * f.getValue(right) < 0) && (f.getValue(x0) * fDer2.getValue(x0) > 0);
+  }
+
+  private static boolean checkSecondCondition() {   
     delta = Math.max(x0 - left, right - x0);     
     double m1 = MinMaxAbsFunction.getMinAbs(fDer1, left, right);
     double m2 = MinMaxAbsFunction.getMaxAbs(fDer2, left, right);

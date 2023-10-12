@@ -42,7 +42,7 @@ public class FixedPointIteration {
   private static final int MAX_ITERATIONS = 100;
   private static final double E = 0.0001;
   private static Function mainPhi, mainPhiDer;
-  private static double left, right, x0, q, x1, x2, x3;  
+  private static double left, right, x0, q, x1, x2, x3, x1Copy, x2Copy, x3Copy;  
 
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);   
@@ -77,17 +77,38 @@ public class FixedPointIteration {
     x1 = x0;
     x2 = mainPhi.getValue(x1);
     x3 = mainPhi.getValue(x2);
+    x1Copy = x0;
+    x2Copy = x2;
+    x3Copy = x3;
 
     while (!canFinish() && i < MAX_ITERATIONS) {
       x1 = x2;
       x2 = x3;
       x3 = mainPhi.getValue(x3);
+
       i++;
     }
+
+    System.out.println(i);
+    i = 0;
+    while (!canFinish2() && i < MAX_ITERATIONS) {
+      x1Copy = x2Copy;
+      x2Copy = x3Copy;
+      x3Copy = mainPhi.getValue(x3Copy);
+      x3Copy = x3Copy + ((x3Copy - x2Copy) / (2 * x2Copy - x3Copy - x1Copy));
+
+      i++;
+    }
+
+    System.out.println(i);
     
     double y = f.getValue(x3);
 
     System.out.println("Result:\n\tx: " + x3 + "\n\ty: " + y);
+
+    y = f.getValue(x3Copy);
+
+    System.out.println("Result:\n\tx: " + x3Copy + "\n\ty: " + y);
   }
 
   private static boolean checkFirstCondition() {
@@ -105,5 +126,9 @@ public class FixedPointIteration {
 
   private static boolean canFinish() {
     return Math.pow(x3 - x2, 2) / Math.abs(2 * x2 - x3 - x1) < E;
+  }
+
+  private static boolean canFinish2() {
+    return Math.pow(x3Copy - x2Copy, 2) / Math.abs(2 * x2Copy - x3Copy - x1Copy) < E;
   }
 }
