@@ -1,14 +1,12 @@
 package Lab2;
 
 public class SquareRootMethod {
-  private static int size = 4;
+  private static int size = 2;
   private static double[][] A = {
-    {2, 1, -1, 0},
-    {1, 3, 0, 1},
-    {-1, 0, 2, 1},
-    {0, 1, 1, 4}
+    {2, 1},
+    {1, 0.49}
   };
-  private static double[] b = {1, -3, -2, -5};
+  private static double[] b = {1.01001, 3.001};
 
   public static void main(String[] args) {
     double[][] S = new double[size][size];    
@@ -55,7 +53,15 @@ public class SquareRootMethod {
       }
       x[i] = (y[i] - xSum) / S[i][i];
     }
-    System.out.println("x=(" + x[0] + ", " + x[1] + ", " + x[2] + ", " + x[3] + ")");
+    System.out.println("x=(" + x[0] + ", " + x[1] + ")");
+
+    for (int i = 0; i < size; i++) {
+      double bi = 0;
+      for (int j = 0; j < size; j++) {
+        bi += A[i][j] * x[j];        
+      }
+      System.out.println(bi);
+    }
 
     // Find determinant
     for (int i = 0; i < size; i++) {
@@ -108,13 +114,13 @@ public class SquareRootMethod {
   }  
 
   private static void multiplyAndPrintMatrix(double[][] M1, double[][] M2) {
-    double[][] Res = new double[4][4];
+    double[][] Res = new double[size][size];
     for(int i = 0; i < size; i++) {    
       for(int j = 0; j < size; j++) {                
         for(int k = 0; k < size; k++) {      
           Res[i][j] += M1[i][k] * M2[k][j];      
         }
-        System.out.printf("%.2f ", Res[i][j]);
+        System.out.printf("%.10f ", Res[i][j]);
       }
       System.out.println();
       }    

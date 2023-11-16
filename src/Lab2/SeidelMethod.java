@@ -1,7 +1,7 @@
 package Lab2;
 
 public class SeidelMethod {
-  private static final double E = 0.00000000000000000000000001;
+  private static final double E = 10e-4;
   private static int size = 4;
   private static double[][] A = {
     {2, 1, -1, 0}, // 2 = 2
